@@ -18,15 +18,15 @@ export function ProfilePage() {
   if (isLoading) return <div className="loading">Loading profile...</div>
   if (error) return <div className="error">Failed to load profile</div>
 
-  const profile = data?.data
+  const profile = (data as any)?.data || {}
 
   return (
     <div className="page-profile">
       <div className="profile-header">
-        <div className="avatar large">{profile?.username?.[0]?.toUpperCase() || '?'}</div>
-        <h1>{profile?.display_name}</h1>
-        <p>@{profile?.username}</p>
-        {profile?.bio && <p>{profile.bio}</p>}
+        <div className="avatar large">{profile.username?.[0]?.toUpperCase() || '?'}</div>
+        <h1>{profile.display_name}</h1>
+        <p>@{profile.username}</p>
+        {profile.bio && <p>{profile.bio}</p>}
         <button onClick={() => setIsEditing(!isEditing)}>Edit Profile</button>
       </div>
       {isEditing && (
