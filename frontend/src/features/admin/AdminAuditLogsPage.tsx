@@ -2,7 +2,7 @@ import { useAdminAuditLogs } from './useAdmin'
 
 export function AdminAuditLogsPage() {
   const { data, isLoading } = useAdminAuditLogs()
-  const logs = data?.data || []
+  const logs = (data as any)?.data || []
 
   return (
     <div className="admin-page">
