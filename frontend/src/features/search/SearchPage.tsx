@@ -6,7 +6,7 @@ export function SearchPage() {
   const [query, setQuery] = useState('')
   const { data, isLoading } = useSearchUsers(query)
 
-  const users = data?.data || []
+  const users = (data as any)?.data || []
 
   return (
     <div className="page-search">
