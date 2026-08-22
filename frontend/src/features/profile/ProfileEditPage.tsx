@@ -6,7 +6,8 @@ export function ProfileEditPage() {
   const { username } = useParams<{ username: string }>()
   const { data } = useProfile(username || '')
   const updateProfile = useUpdateProfile()
-  const [bio, setBio] = useState(data?.data?.bio || '')
+  const profile = (data as any)?.data || {}
+  const [bio, setBio] = useState(profile.bio || '')
 
   const handleSubmit = async () => {
     if (!username) return
