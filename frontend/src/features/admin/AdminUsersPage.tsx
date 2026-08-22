@@ -2,7 +2,7 @@ import { useAdminUsers } from './useAdmin'
 
 export function AdminUsersPage() {
   const { data, isLoading } = useAdminUsers()
-  const users = data?.data || []
+  const users = (data as any)?.data || []
 
   return (
     <div className="admin-page">
