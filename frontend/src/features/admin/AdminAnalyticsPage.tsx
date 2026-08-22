@@ -7,7 +7,7 @@ export function AdminAnalyticsPage() {
     queryFn: () => get<{ data: any }>('/analytics/platform/stats'),
   })
 
-  const stats = data?.data || {}
+  const stats = (data as any)?.data || {}
 
   return (
     <div className="admin-page">
