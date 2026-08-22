@@ -2,7 +2,7 @@ import { useAdminPosts } from './useAdmin'
 
 export function AdminPostsPage() {
   const { data, isLoading } = useAdminPosts()
-  const posts = data?.data || []
+  const posts = (data as any)?.data || []
 
   return (
     <div className="admin-page">
