@@ -10,7 +10,7 @@ export function Layout() {
           <small>/ social intelligence</small>
         </div>
         <nav className="top-actions">
-          <NotificationBell />
+          <span>Notifications</span>
         </nav>
       </header>
       <div className="layout">
