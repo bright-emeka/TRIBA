@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query'
 import { get } from '../../lib/api'
-import type { Post, User, Comment, Notification, ActivityEvent, UserStats, PlatformStats, Trend, AIMessage, AdminAuditLog } from '../../types'
+import type { Post, User, Comment, AdminAuditLog } from '../../types'
 
 export function useAdminDashboard() {
   return useQuery({
