@@ -12,6 +12,8 @@ export function CommentSection({ postId }: { postId: string }) {
     setContent('')
   }
 
+  const comments = (data as any)?.data || []
+
   return (
     <div className="comment-section">
       <div className="comment-form">
@@ -20,7 +22,7 @@ export function CommentSection({ postId }: { postId: string }) {
       </div>
       {isLoading && <div className="loading">Loading comments...</div>}
       <div className="comment-list">
-        {data?.data?.map((comment: any) => (
+        {comments.map((comment: any) => (
           <div key={comment.comment_id} className="comment">
             <p>{comment.content}</p>
             <span>{new Date(comment.created_at).toLocaleDateString()}</span>
