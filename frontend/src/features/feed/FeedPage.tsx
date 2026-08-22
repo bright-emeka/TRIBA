@@ -15,7 +15,8 @@ export function FeedPage() {
     setDraft('')
   }
 
-  const posts = data?.data?.data || []
+  const posts = (data as any)?.data?.data || []
+  const pagination = (data as any)?.data?.pagination || {}
 
   return (
     <div className="page-feed">
@@ -48,8 +49,8 @@ export function FeedPage() {
           </article>
         ))}
       </div>
-      {data?.data?.pagination?.has_next && (
-        <button onClick={() => setCursor(data.data.pagination.next_cursor || undefined)}>Load more</button>
+      {pagination.has_next && (
+        <button onClick={() => setCursor(pagination.next_cursor || undefined)}>Load more</button>
       )}
     </div>
   )
