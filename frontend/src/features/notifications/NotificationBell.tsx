@@ -9,7 +9,8 @@ export function NotificationBell() {
     refetchInterval: 30000,
   })
 
-  const unreadCount = data?.data?.filter((n: Notification) => !n.is_read).length || 0
+  const notifications = (data as any)?.data || []
+  const unreadCount = notifications.filter((n: Notification) => !n.is_read).length
 
   return (
     <div className="notification-bell">
