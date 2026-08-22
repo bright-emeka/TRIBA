@@ -4,7 +4,7 @@ export function NotificationsPage() {
   const { data, isLoading } = useNotifications()
   const markRead = useMarkNotificationRead()
 
-  const notifications = data?.data || []
+  const notifications = (data as any)?.data || []
 
   return (
     <div className="page-notifications">
