@@ -2,7 +2,7 @@ import { useAdminComments } from './useAdmin'
 
 export function AdminCommentsPage() {
   const { data, isLoading } = useAdminComments()
-  const comments = data?.data || []
+  const comments = (data as any)?.data || []
 
   return (
     <div className="admin-page">
