@@ -2,7 +2,7 @@ import { useAdminDashboard } from './useAdmin'
 
 export function AdminDashboard() {
   const { data, isLoading } = useAdminDashboard()
-  const stats = data?.data || {}
+  const stats = (data as any)?.data || {}
 
   return (
     <div className="admin-dashboard">
