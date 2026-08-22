@@ -1,4 +1,4 @@
-from app.core.firebase import get_db
+from app.modules.ai.repository import AIRepository
 from datetime import datetime, timezone
 import google.generativeai as genai
 from app.core.config import settings
@@ -14,38 +14,22 @@ class AIService:
         prompt = f"You are TRIBA assistant. Context: {json.dumps(context)}\nUser: {message}\nAssistant:"
         response = model.generate_content(prompt)
         assistant_message = response.text
-        db = get_db()
-        chat_ref = db.collection("ai_chats").document(user_id).collection("messages").document()
-        chat_ref.set({
-            "role": "user",
-            "content": message,
-            "created_at": datetime.now(timezone.utc).isoformat(),
-        })
-        chat_ref = db.collection("ai_chats").document(user_id).collection("messages").document()
-        chat_ref.set({
+        AIRepository.save_message(user_id, "user", message)
+        AIRepository.save_message(user_id, "assistant", assistant_message)
+        return {
             "role": "assistant",
             "content": assistant_message,
-            "created_at": datetime.now(timezone.utc).isoformat(),
-        })
-        return {"role": "assistant", "content": assistant_message}
+            "timestamp": datetime.now(timezone.utc).isoformat(),
+        }
 
     @staticmethod
     def build_context(user_id: str, message: str) -> dict:
-        context = {}
-        context["user_id"] = user_id
-        return context
+        return {"user_id": user_id, "message": message}
 
     @staticmethod
     def get_history(user_id: str, limit: int = 50) -> list[dict]:
-        db = get_db()
-        docs = db.collection("ai_chats").document(user_id).collection("messages").order_by("created_at", direction="DESCENDING").limit(limit).get()
-        return [{**doc.to_dict(), "message_id": doc.id} for doc in docs]
+        return AIRepository.get_history(user_id, limit)
 
     @staticmethod
     def clear_history(user_id: str):
-        db = get_db()
-        docs = db.collection("ai_chats").document(user_id).collection("messages").get()
-        batch = db.batch()
-        for doc in docs:
-            batch.delete(doc.reference)
-        batch.commit()
+        AIRepository.clear_history(user_id)

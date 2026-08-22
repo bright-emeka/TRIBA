@@ -31,10 +31,8 @@ async def list_comments(post_id: str, user=Depends(get_current_user)):
 async def update_comment(comment_id: str, payload: CommentUpdate, user=Depends(get_current_user)):
     comment = CommentRepository.get(comment_id)
     if not comment:
-        from fastapi import HTTPException
         raise HTTPException(status_code=404, detail="Comment not found")
     if comment.get("author_id") != user["uid"]:
-        from fastapi import HTTPException
         raise HTTPException(status_code=403, detail="Cannot update another user's comment")
     updates = payload.model_dump(exclude_unset=True)
     updates["updated_at"] = datetime.now(timezone.utc).isoformat()
@@ -46,10 +44,8 @@ async def update_comment(comment_id: str, payload: CommentUpdate, user=Depends(g
 async def delete_comment(comment_id: str, user=Depends(get_current_user)):
     comment = CommentRepository.get(comment_id)
     if not comment:
-        from fastapi import HTTPException
         raise HTTPException(status_code=404, detail="Comment not found")
     if comment.get("author_id") != user["uid"]:
-        from fastapi import HTTPException
         raise HTTPException(status_code=403, detail="Cannot delete another user's comment")
     CommentRepository.delete(comment_id)
     return success(None, status_code=204)

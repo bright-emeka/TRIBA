@@ -1,9 +1,7 @@
-from app.core.firebase import get_db
+from app.modules.search.repository import SearchRepository
 
 
 class SearchService:
     @staticmethod
     def search_users(query: str) -> list[dict]:
-        db = get_db()
-        users = db.collection("users").where("username", ">=", query).where("username", "<=", query + "\uf8ff").limit(20).get()
-        return [{**doc.to_dict(), "uid": doc.id} for doc in users]
+        return SearchRepository.search_users(query)

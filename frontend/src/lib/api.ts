@@ -1,66 +1,43 @@
 import axios from 'axios'
-import type { AuthTokens, LoginCredentials, RegisterCredentials } from '@/types'
+import type { ApiResponse } from '../types'
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:4000/api'
+const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:8000/api/v1'
 
 export const api = axios.create({
-  baseURL: API_URL,
+  baseURL: API_BASE,
   headers: {
     'Content-Type': 'application/json',
   },
 })
 
-api.interceptors.request.use(
-  (config) => {
-    const tokens = localStorage.getItem('triba_tokens')
-    if (tokens) {
-      const parsed = JSON.parse(tokens) as AuthTokens
-      if (parsed.accessToken) {
-        config.headers.Authorization = `Bearer ${parsed.accessToken}`
-      }
-    }
-    return config
-  },
-  (error) => Promise.reject(error)
-)
+api.interceptors.request.use((config) => {
+  const token = localStorage.getItem('triba_token')
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`
+  }
+  return config
+})
 
 api.interceptors.response.use(
-  (response) => response,
-  async (error) => {
-    const originalRequest = error.config
-    if (error.response?.status === 401 && !originalRequest._retry) {
-      originalRequest._retry = true
-      try {
-        const tokens = localStorage.getItem('triba_tokens')
-        if (tokens) {
-          const parsed = JSON.parse(tokens) as AuthTokens
-          const response = await api.post('/auth/refresh', {
-            refreshToken: parsed.refreshToken,
-          })
-          const newTokens = response.data.tokens as AuthTokens
-          localStorage.setItem('triba_tokens', JSON.stringify(newTokens))
-          originalRequest.headers.Authorization = `Bearer ${newTokens.accessToken}`
-          return api(originalRequest)
-        }
-      } catch {
-        localStorage.removeItem('triba_tokens')
-        window.location.href = '/login'
-      }
-    }
-    return Promise.reject(error)
+  (response) => response.data,
+  (error) => {
+    const message = error.response?.data?.message || error.message || 'An error occurred'
+    return Promise.reject(new Error(message))
   }
 )
 
-export const authApi = {
-  login: (credentials: LoginCredentials) =>
-    api.post('/auth/login', credentials),
-  register: (credentials: RegisterCredentials) =>
-    api.post('/auth/register', credentials),
-  forgotPassword: (email: string) =>
-    api.post('/auth/forgot-password', { email }),
-  resetPassword: (token: string, password: string) =>
-    api.post('/auth/reset-password', { token, password }),
-  refresh: (refreshToken: string) =>
-    api.post('/auth/refresh', { refreshToken }),
-  me: () => api.get('/auth/me'),
+export const get = async <T>(url: string, params?: Record<string, any>): Promise<ApiResponse<T>> => {
+  return api.get(url, { params })
+}
+
+export const post = async <T>(url: string, data?: any): Promise<ApiResponse<T>> => {
+  return api.post(url, data)
+}
+
+export const patch = async <T>(url: string, data?: any): Promise<ApiResponse<T>> => {
+  return api.patch(url, data)
+}
+
+export const del = async <T>(url: string): Promise<ApiResponse<T>> => {
+  return api.delete(url)
 }

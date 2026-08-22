@@ -1,10 +1,9 @@
 from fastapi import APIRouter, Depends, HTTPException
-from pydantic import BaseModel
-from typing import Optional
 from app.modules.ai.service import AIService
 from app.shared.responses import success
 from app.core.dependencies import get_current_user
-from app.modules.ai.permissions import AIPermissions
+from pydantic import BaseModel
+from typing import Optional
 
 router = APIRouter()
 
@@ -16,8 +15,6 @@ class ChatRequest(BaseModel):
 
 @router.post("/ai/chat")
 async def chat(request: ChatRequest, user=Depends(get_current_user)):
-    if not AIPermissions.can_chat(user):
-        raise HTTPException(status_code=403, detail="AI chat not available")
     response = await AIService.chat(user["uid"], request.message)
     return success(response)
 

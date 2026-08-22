@@ -1,185 +1,132 @@
 export interface User {
-  id: string
+  uid: string
   email: string
   username: string
-  displayName: string
+  display_name: string
+  role: 'user' | 'admin'
+  is_suspended: boolean
+  avatar_url?: string
   bio?: string
-  avatarUrl?: string
-  role: 'user' | 'moderator' | 'admin'
-  isVerified: boolean
-  isActive: boolean
-  createdAt: string
-  updatedAt: string
-  stats: {
-    posts: number
-    followers: number
-    following: number
-  }
+  created_at?: string
+  updated_at?: string
 }
 
 export interface Post {
-  id: string
-  authorId: string
-  author: Pick<User, 'id' | 'username' | 'displayName' | 'avatarUrl'>
+  post_id: string
+  author_id: string
   content: string
-  mediaUrls?: string[]
-  tags: string[]
-  likes: number
-  comments: number
-  shares: number
-  isLiked: boolean
-  isBookmarked: boolean
-  createdAt: string
-  updatedAt: string
+  visibility: 'public' | 'followers_only' | 'private'
+  likes_count: number
+  comments_count: number
+  created_at: string
+  updated_at: string
+  author?: User
 }
 
 export interface Comment {
-  id: string
-  postId: string
-  authorId: string
-  author: Pick<User, 'id' | 'username' | 'displayName' | 'avatarUrl'>
+  comment_id: string
+  post_id: string
+  author_id: string
   content: string
-  parentId?: string
-  likes: number
-  isLiked: boolean
-  createdAt: string
-  updatedAt: string
+  created_at: string
+  updated_at: string
+  author?: User
+}
+
+export interface Like {
+  like_id: string
+  user_id: string
+  post_id: string
+  created_at: string
+}
+
+export interface Follow {
+  follower_id: string
+  following_id: string
+  created_at: string
 }
 
 export interface Notification {
-  id: string
-  userId: string
-  type: 'like' | 'comment' | 'follow' | 'mention' | 'system'
-  actor?: Pick<User, 'id' | 'username' | 'displayName' | 'avatarUrl'>
-  postId?: string
-  commentId?: string
+  notification_id: string
+  recipient_id: string
+  actor_id: string
+  type: 'follow' | 'like' | 'comment' | 'mention' | 'system'
+  post_id?: string
+  comment_id?: string
   message: string
-  read: boolean
-  createdAt: string
+  is_read: boolean
+  created_at: string
+  actor?: User
 }
 
-export interface ChatMessage {
-  id: string
+export interface ActivityEvent {
+  event_id: string
+  user_id: string
+  event_type: string
+  target_type?: string
+  target_id?: string
+  metadata: Record<string, any>
+  created_at: string
+}
+
+export interface UserStats {
+  user_id: string
+  posts_created_today: number
+  posts_created_week: number
+  posts_created_month: number
+  likes_given_today: number
+  likes_given_week: number
+  comments_given_week: number
+  followers_gained_week: number
+  following_count: number
+  profile_views_week: number
+}
+
+export interface PlatformStats {
+  total_users: number
+  total_posts: number
+  total_comments: number
+  total_likes: number
+  daily_active_users: number
+}
+
+export interface Trend {
+  trend_id: string
+  topic: string
+  score: number
+  post_count: number
+}
+
+export interface AIMessage {
+  message_id: string
   role: 'user' | 'assistant'
   content: string
-  createdAt: string
+  created_at: string
 }
 
 export interface Report {
-  id: string
-  reporterId: string
-  reporter: Pick<User, 'id' | 'username' | 'displayName'>
-  targetType: 'post' | 'comment' | 'user'
-  targetId: string
+  report_id: string
+  reporter_id: string
+  target_type: 'post' | 'comment' | 'user'
+  target_id: string
   reason: string
-  status: 'pending' | 'reviewed' | 'resolved' | 'dismissed'
-  reviewedBy?: string
-  reviewNotes?: string
-  createdAt: string
-  updatedAt: string
+  status: 'pending' | 'resolved' | 'dismissed'
+  created_at: string
 }
 
-export interface AuditLog {
-  id: string
-  actorId: string
-  actor: Pick<User, 'id' | 'username' | 'displayName'>
+export interface AdminAuditLog {
+  log_id: string
+  admin_id: string
   action: string
-  entityType: string
-  entityId: string
-  details?: Record<string, unknown>
-  ipAddress?: string
-  createdAt: string
+  target_type: string
+  target_id: string
+  reason?: string
+  created_at: string
 }
 
-export interface AdminStats {
-  totalUsers: number
-  activeUsers: number
-  totalPosts: number
-  totalComments: number
-  totalReports: number
-  newUsersToday: number
-  newPostsToday: number
-  postsPerHour: { hour: string; count: number }[]
-  topTags: { tag: string; count: number }[]
-  userGrowth: { date: string; count: number }[]
-}
-
-export interface PaginatedResponse<T> {
-  data: T[]
-  total: number
-  page: number
-  pageSize: number
-  totalPages: number
-}
-
-export interface AuthTokens {
-  accessToken: string
-  refreshToken: string
-}
-
-export interface AuthState {
-  user: User | null
-  tokens: AuthTokens | null
-  isAuthenticated: boolean
-  isLoading: boolean
-}
-
-export interface LoginCredentials {
-  email: string
-  password: string
-}
-
-export interface RegisterCredentials {
-  email: string
-  username: string
-  displayName: string
-  password: string
-}
-
-export interface ApiError {
-  message: string
-  status: number
-  errors?: Record<string, string[]>
-}
-
-export interface CreatePostDto {
-  content: string
-  tags?: string[]
-  mediaUrls?: string[]
-}
-
-export interface UpdatePostDto {
-  content?: string
-  tags?: string[]
-  mediaUrls?: string[]
-}
-
-export interface CreateCommentDto {
-  content: string
-  parentId?: string
-}
-
-export interface UpdateProfileDto {
-  displayName?: string
-  bio?: string
-  avatarUrl?: string
-}
-
-export interface AdminUserUpdateDto {
-  role?: 'user' | 'moderator' | 'admin'
-  isActive?: boolean
-  isVerified?: boolean
-}
-
-export interface PaginationParams {
-  page: number
-  pageSize: number
-  search?: string
-}
-
-export interface FiltersParams {
-  startDate?: string
-  endDate?: string
-  status?: string
-  role?: string
+export interface ApiResponse<T = any> {
+  success: boolean
+  data?: T
+  error_code?: string
+  message?: string
 }

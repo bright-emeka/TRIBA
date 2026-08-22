@@ -1,11 +1,10 @@
 from app.modules.auth.models import AuthModel
-from app.shared.utils import generate_id
 from datetime import datetime, timezone
 
 
 class AuthRepository:
     @staticmethod
-    async def upsert_user(data: dict) -> dict:
+    def upsert_user(data: dict) -> dict:
         db = __import__("app.core.firebase", fromlist=["get_db"]).get_db()
         uid = data.get("uid")
         doc_ref = db.collection(AuthModel.COLLECTION).document(uid)

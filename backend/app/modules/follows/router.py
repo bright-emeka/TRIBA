@@ -10,7 +10,6 @@ router = APIRouter()
 @router.post("/users/{user_id}/follow")
 async def follow_user(user_id: str, user=Depends(get_current_user)):
     if user["uid"] == user_id:
-        from fastapi import HTTPException
         raise HTTPException(status_code=400, detail="Cannot follow yourself")
     FollowRepository.follow(user["uid"], user_id)
     return success({"following": True}, status_code=201)

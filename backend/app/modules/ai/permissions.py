@@ -3,5 +3,11 @@ from fastapi import Depends
 from app.core.dependencies import get_current_user
 
 
-async def get_ai_user(user=Depends(get_current_user)):
-    return user
+class AIPermissions:
+    @staticmethod
+    def can_chat(user) -> bool:
+        return True
+
+    @staticmethod
+    def can_access_history(user) -> bool:
+        return True

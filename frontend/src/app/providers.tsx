@@ -1,25 +1,26 @@
-import { type ReactNode } from 'react'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import { AuthProvider } from '@/hooks/useAuth'
-import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
+import { BrowserRouter } from 'react-router-dom'
+import { AuthProvider } from '../features/auth/AuthContext'
+import { router } from './router'
 
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      staleTime: 1000 * 60 * 5,
       retry: 1,
       refetchOnWindowFocus: false,
+      staleTime: 1000 * 60 * 5,
     },
   },
 })
 
-export function Providers({ children }: { children: ReactNode }) {
+export function Providers({ children }: { children: React.ReactNode }) {
   return (
     <QueryClientProvider client={queryClient}>
-      <AuthProvider>
-        {children}
-        <ReactQueryDevtools initialIsOpen={false} />
-      </AuthProvider>
+      <BrowserRouter>
+        <AuthProvider>
+          {children}
+        </AuthProvider>
+      </BrowserRouter>
     </QueryClientProvider>
   )
 }
