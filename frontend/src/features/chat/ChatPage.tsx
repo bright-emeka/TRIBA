@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { useAIChat } from './useAIChat'
 
 export function ChatPage() {
@@ -10,9 +11,9 @@ export function ChatPage() {
         <button onClick={() => clearHistory()}>Clear history</button>
       </div>
       <div className="chat-messages">
-        {messages.map((msg: any) => (
-          <div key={msg.message_id} className={`chat-message ${msg.role}`}>
-            <p>{msg.content}</p>
+        {(messages as any[]).map((msg: any) => (
+          <div key={(msg as any).message_id || Math.random()} className={`chat-message ${(msg as any).role}`}>
+            <p>{(msg as any).content}</p>
           </div>
         ))}
         {isLoading && <div className="chat-message assistant">Thinking...</div>}
