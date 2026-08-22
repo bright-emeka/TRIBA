@@ -1,7 +1,7 @@
 import { createContext, useContext, useState, useEffect, type ReactNode } from 'react'
-import { auth as firebaseAuth } from '../lib/firebase'
+import { auth as firebaseAuth } from '../../lib/firebase'
 import { onAuthStateChanged, type User as FirebaseUser } from 'firebase/auth'
-import { post } from '../lib/api'
+import { post } from '../../lib/api'
 
 interface AuthContextType {
   user: any | null
@@ -20,6 +20,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
+    if (!firebaseAuth) return
     const unsubscribe = onAuthStateChanged(firebaseAuth, async (fbUser) => {
       setFirebaseUser(fbUser)
       if (fbUser) {
@@ -41,6 +42,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, [])
 
   const login = async (email: string, password: string) => {
+    if (!firebaseAuth) return
     const { signInWithEmailAndPassword } = await import('firebase/auth')
     const credential = await signInWithEmailAndPassword(firebaseAuth, email, password)
     const token = await credential.user.getIdToken()
@@ -50,6 +52,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }
 
   const register = async (email: string, password: string, username: string) => {
+    if (!firebaseAuth) return
     const { createUserWithEmailAndPassword, updateProfile } = await import('firebase/auth')
     const credential = await createUserWithEmailAndPassword(firebaseAuth, email, password)
     await updateProfile(credential.user, { displayName: username })
@@ -60,6 +63,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }
 
   const logout = async () => {
+    if (!firebaseAuth) return
     const { signOut } = await import('firebase/auth')
     await signOut(firebaseAuth)
     localStorage.removeItem('triba_token')
