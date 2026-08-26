@@ -40,3 +40,4 @@ export function useDeletePost(postId: string) {
     },
   })
 }
+
