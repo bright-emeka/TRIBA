@@ -12,6 +12,7 @@ export default {
         line: '#dfdbd1',
         paper: '#fbfaf7',
         accent: '#df684a',
+        brandCream: '#f4f0e8',
         coral: '#df684a',
         blue: '#5b8cbf',
         gold: '#c9a84c',
